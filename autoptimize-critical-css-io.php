@@ -11,6 +11,8 @@
  * Domain Path: /languages
  */
 
+namespace nicomartin\AoCriticalCSS;
+
 global $wp_version;
 if (version_compare($wp_version, '4.7', '<') || version_compare(PHP_VERSION, '5.4', '<')) {
 	function aoccssCompatabilityWarning()
@@ -37,11 +39,18 @@ if (version_compare($wp_version, '4.7', '<') || version_compare(PHP_VERSION, '5.
 
 } else {
 
+	require_once 'src/Plugin.php';
+	Plugin::initialize( __FILE__ );
+
+	include_once 'src/Assets.php';
+	$Assets = new Assets();
+	$Assets->run();
+
 	include_once 'src/Settings.php';
-	$aoccssSettings = new nicomartin\AoCriticalCSS\Settings();
+	$aoccssSettings = new Settings();
 	$aoccssSettings->run();
 
 	include_once 'src/Output.php';
-	$aoccssOutput = new nicomartin\AoCriticalCSS\Output();
+	$aoccssOutput = new Output();
 	$aoccssOutput->run();
 }

@@ -7,25 +7,25 @@
     "type": "git",
     "url": "git@bitbucket.org:sayhellogmbh/shp_autoptimize-critical-css-io.git"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
-    "babel-core": "^6.25.0",
-    "babel-loader": "^7.1.1",
-    "babel-preset-env": "^1.6.0",
-    "gulp": "^3.9.1",
-    "gulp-compass": "^2.1.0",
-    "gulp-livereload": "^3.8.1",
-    "gulp-load-plugins": "^1.5.0",
-    "gulp-minify-css": "^1.2.4",
-    "gulp-rename": "^1.2.2",
-    "gulp-svgmin": "^1.2.3",
-    "gulp-uglify": "^2.0.1",
-    "gulp-watch": "^4.3.11",
-    "json-loader": "^0.5.4",
-    "preloadfill": "github:jonathantneal/preloadfill",
-    "webpack": "^3.0.0",
-    "webpack-stream": "^3.2.0"
+    "@babel/core": "^7.8.6",
+    "@babel/preset-env": "^7.8.6",
+    "@babel/preset-react": "^7.8.3",
+    "@babel/register": "^7.8.6",
+    "autoprefixer": "^9.7.4",
+    "babel-loader": "^8.0.5",
+    "gulp": "^4.0.0",
+    "gulp-clean-css": "^4.2.0",
+    "gulp-filter": "^6.0.0",
+    "gulp-livereload": "^4.0.2",
+    "gulp-modernizr": "^3.4.1",
+    "gulp-postcss": "^8.0.0",
+    "gulp-rename": "^1.4.0",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-uglify": "^3.0.2",
+    "postcss-nested": "^4.2.1",
+    "webpack-stream": "^5.2.1"
   },
   "author": "Nico Martin",
   "license": "UNLICENSED",
@@ -34,7 +34,12 @@
   },
   "babel": {
     "presets": [
-      "env"
+      "@babel/env",
+      "@babel/preset-react"
     ]
-  }
+  },
+  "browserslist": [
+    "> 1%",
+    "IE 11"
+  ]
 }
