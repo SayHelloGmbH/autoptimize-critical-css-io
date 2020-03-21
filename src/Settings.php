@@ -46,7 +46,8 @@ class Settings
 			'API Key',
 			function () {
 				$key = $this->getApiKey();
-				echo '<input id="' . self::$settingAPIKey . '" name="' . self::$settingAPIKey . '" placeholder="' . __('Your API key', 'hello-aoccss') . '" value="' . $key . '" />';
+				echo '<input id="' . self::$settingAPIKey . '" type="text" name="' . self::$settingAPIKey . '" placeholder="' . __('Your API key', 'hello-aoccss') . '" value="' . $key . '" />';
+				echo '<p>' . sprintf(__('API Key for %s', 'hello-aoccss'), '<b>' . Plugin::apiBase() . '</b>') . '</p>';
 			},
 			self::$optionsPage,
 			self::$key . '-section'
@@ -90,7 +91,7 @@ class Settings
 				?>
 				<?php settings_errors(); ?>
 				<?php
-				if ( self::getApiKey()) {
+				if (self::getApiKey()) {
 					?>
 					<div class="aoccssio-settings"></div>
 					<?php
@@ -110,11 +111,13 @@ class Settings
 				}
 				?>
 				<form id="settings" method="post" action="options.php" class="aoccssio-key">
-					<?php
-					settings_fields(self::$optionsPage);
-					do_settings_fields(self::$optionsPage, self::$key . '-section');
-					submit_button();
-					?>
+					<table class="form-table">
+						<?php
+						settings_fields(self::$optionsPage);
+						do_settings_fields(self::$optionsPage, self::$key . '-section');
+						?>
+					</table>
+					<?php submit_button(); ?>
 				</form>
 			</div>
 		</div>
