@@ -1,2 +1,24 @@
+.aoccssio-intro, .aoccssio-settings, .aoccssio-key {
+	box-sizing: border-box;
+	background: #fff;
+	border: 1px solid #ccc;
+	padding: 15px;
+	margin: 15px 10px 10px 0;
+	min-height: 15px;
+	width: 100%;
+}
 
-/*# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJhZG1pbi5jc3MifQ== */
+.aoccssio-key input#critcalcssio_apikey {
+		width: 100%;
+	}
+
+.aoccssio-key th {
+		padding-right: 20px;
+	}
+
+.aoccssio-key th, .aoccssio-key td {
+		vertical-align: top;
+		text-align: left;
+	}
+
+/*# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImFkbWluLmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtDQUNDLHNCQUFzQjtDQUN0QixnQkFBZ0I7Q0FDaEIsc0JBQXNCO0NBQ3RCLGFBQWE7Q0FDYix3QkFBd0I7Q0FDeEIsZ0JBQWdCO0NBQ2hCLFdBQVc7QUFDWjs7QUFHQztFQUNDLFdBQVc7Q0FDWjs7QUFFQTtFQUNDLG1CQUFtQjtDQUNwQjs7QUFFQTtFQUNDLG1CQUFtQjtFQUNuQixnQkFBZ0I7Q0FDakIiLCJmaWxlIjoiYWRtaW4uY3NzIn0= */

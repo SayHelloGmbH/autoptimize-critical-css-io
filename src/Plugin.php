@@ -43,4 +43,14 @@ class Plugin
 	{
 		return self::$file;
 	}
+
+	public static function baseUrl()
+	{
+		return get_home_url();
+	}
+
+	public static function apiBase()
+	{
+		return untrailingslashit(apply_filters('aoccssio/apiBaseURL', 'https://api.critical-css.io'));
+	}
 }

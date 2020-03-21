@@ -43,8 +43,8 @@ if (version_compare($wp_version, '4.7', '<') || version_compare(PHP_VERSION, '5.
 	Plugin::initialize( __FILE__ );
 
 	include_once 'src/Assets.php';
-	$Assets = new Assets();
-	$Assets->run();
+	$aoccssAssets = new Assets();
+	$aoccssAssets->run();
 
 	include_once 'src/Settings.php';
 	$aoccssSettings = new Settings();

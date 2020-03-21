@@ -7,6 +7,8 @@ class Settings
 
 	private static $key = 'aoccssio';
 	private static $optionsPage = 'aoccssio_options';
+	private static $settingAPIKey = 'critcalcssio_apikey';
+	private static $title = 'Autoptimize critical-css.io';
 
 	public function __construct()
 	{
@@ -16,6 +18,7 @@ class Settings
 	{
 		add_filter('autoptimize_filter_settingsscreen_tabs', [$this, 'addTab']);
 		add_action('admin_menu', [$this, 'adminMenu']);
+		add_action('admin_init', [$this, 'settingsInit']);
 	}
 
 	public function addTab($tabs)
@@ -25,28 +28,53 @@ class Settings
 
 	public function adminMenu()
 	{
-		add_submenu_page(null, 'Autoptimize critical-css.io', 'Autoptimize critical-css.io', 'manage_options', self::$optionsPage, [$this, 'settingsPage']);
+		add_submenu_page(null, self::$title, self::$title, 'manage_options', self::$optionsPage, [$this, 'settingsPage']);
+	}
 
+	public function settingsInit()
+	{
 		add_settings_section(
 			self::$key . '-section',
-			'Example settings section',
+			'CriticalCSS API Key',
 			function () {
-				echo 'test';
 			},
 			self::$optionsPage
 		);
 
 		add_settings_field(
-			'critcalcssio_apikey',
+			self::$settingAPIKey,
 			'API Key',
 			function () {
-				echo 'field';
+				$key = $this->getApiKey();
+				echo '<input id="' . self::$settingAPIKey . '" name="' . self::$settingAPIKey . '" placeholder="' . __('Your API key', 'hello-aoccss') . '" value="' . $key . '" />';
 			},
 			self::$optionsPage,
 			self::$key . '-section'
 		);
 
-		register_setting('aoccssio_options_group', 'critcalcssio_apikey');
+		register_setting(
+			self::$optionsPage,
+			self::$settingAPIKey,
+			function ($key) {
+				$key = str_replace(' ', '', $key);
+				if ($key === '') {
+					return '';
+				}
+
+				if ( ! $this->validateApiKey($key)) {
+					add_settings_error(
+						self::$settingAPIKey,
+						'invalid',
+						sprintf(__('The API Key is invalid or does not match the URL %s', 'hello-aoccss'), Plugin::baseUrl()),
+						'error'
+					);
+
+					return '';
+				}
+
+				return str_replace(' ', '', $key);
+			}
+		);
 	}
 
 	public function settingsPage()
@@ -57,40 +85,67 @@ class Settings
 				<div id="ao_title_and_button">
 					<h1><?php _e('Autoptimize Settings', 'autoptimize'); ?></h1>
 				</div>
-
 				<?php
-				// Print AO settings tabs
 				echo \autoptimizeConfig::ao_admin_tabs();
-
-				$key = get_option('critcalcssio_apikey');
-				var_dump($key);
 				?>
-				<form id="settings" method="post" action="options.php">
-					<?php do_settings_fields(self::$optionsPage, self::$key . '-section'); ?>
-					<table id="key" class="form-table">
-						<tr>
-							<th scope="row">
-								<?php _e('Your API Key', 'autoptimize'); ?>
-							</th>
-							<td>
-								<textarea id="critcalcssio_apikey" name="critcalcssio_apikey" rows='2' style="width:100%;" placeholder="<?php _e('Please enter your criticalcss.com API key here...', 'autoptimize'); ?>"><?php echo trim($key); ?></textarea>
-								<p class="notes">
-									<?php _e('Enter your <a href="https://criticalcss.com/account/api-keys?aff=1" target="_blank">criticalcss.com</a> API key above. The key is revalidated every time a new job is sent to it.<br />To obtain your API key, go to <a href="https://criticalcss.com/account/api-keys?aff=1" target="_blank">criticalcss.com</a> > Account > API Keys.<br />Requests to generate a critical CSS via the API are priced at £5 per domain per month.<br /><strong>Not sure yet? With the <a href="https://criticalcss.com/faq/?aff=1#trial" target="_blank">30 day free trial</a>, you have nothing to lose!</strong>', 'autoptimize'); ?>
-								</p>
-							</td>
-						</tr>
-					</table>
-					<p class="submit left">
-						<input type="submit" class="button-primary" value="<?php _e('Save Changes', 'autoptimize') ?>"/>
-					</p>
+				<?php settings_errors(); ?>
+				<?php
+				if ( self::getApiKey()) {
+					?>
+					<div class="aoccssio-settings"></div>
+					<?php
+				} else {
+					?>
+					<div class="aoccssio-intro">
+						<h2><?php _e('Critical CSS API', 'hello-aoccss'); ?></h2>
+						<p>
+							<?php printf(__('Critical CSS API is an open source tool to generate the Critical CSS of a given URL: %s', 'hello-aoccss'), '<a href="https://github.com/nico-martin/critical-css-api" target="_blank">https://github.com/nico-martin/critical-css-api</a>'); ?><br/>
+							<?php printf(__('By default this plugin uses the hosted version on %1s. But you could also use a self-hosted version by adjusting the API Base URL using the %s-filter.', 'hello-aoccss'), '<a href="https://app.critical-css.io" target="_blank">app.critical-css.io</a>', '<code>aoccssio/apiBaseURL</code>'); ?>
+						</p>
+						<p>
+							<?php printf(__('Current base URL: %s', 'hello-aoccss'), '<b>' . Plugin::apiBase() . '</b>'); ?>
+						</p>
+					</div>
+					<?php
+				}
+				?>
+				<form id="settings" method="post" action="options.php" class="aoccssio-key">
+					<?php
+					settings_fields(self::$optionsPage);
+					do_settings_fields(self::$optionsPage, self::$key . '-section');
+					submit_button();
+					?>
 				</form>
 			</div>
 		</div>
 		<?php
 	}
 
-	function settingsCallbackInput()
+	public function getApiKey()
 	{
-		echo '<input name="eg_setting_name" id="eg_setting_name" type="checkbox" value="1" class="code" ' . checked(1, get_option('eg_setting_name'), false) . ' /> Explanation text';
+		return get_option(self::$settingAPIKey);
+	}
+
+	public function validateApiKey($key = false)
+	{
+		if ( ! $key) {
+			$key = $this->getApiKey();
+		}
+
+		$response = wp_remote_post(Plugin::apiBase() . '/key/isValid', [
+			'headers' => [
+				'Content-Type' => 'application/json',
+			],
+			'body'    => json_encode([
+				'token' => $key,
+				'url'   => Plugin::baseUrl(),
+			]),
+		]);
+
+		if (is_wp_error($response)) {
+			return false;
+		}
+
+		return $response['response']['code'] === 403 ? false : true;
 	}
 }

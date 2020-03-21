@@ -15,7 +15,7 @@ const config = {
 	},
 	reload: [
 		'*.php',
-		'{Classes,inc,partials,templates,includes}/**/*.{php,html,twig}'
+		'src/**/*.{php,html}'
 	]
 };
 
