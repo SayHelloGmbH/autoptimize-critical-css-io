@@ -23,7 +23,7 @@ class Settings
 
 	public function addTab($tabs)
 	{
-		return array_merge($tabs, [self::$optionsPage => __('critical-css.io', 'hello-aoccss')]);
+		return array_merge($tabs, [self::$optionsPage => __('critical-css.io', 'aoccssio')]);
 	}
 
 	public function adminMenu()
@@ -46,8 +46,8 @@ class Settings
 			'API Key',
 			function () {
 				$key = $this->getApiKey();
-				echo '<input id="' . self::$settingAPIKey . '" type="text" name="' . self::$settingAPIKey . '" placeholder="' . __('Your API key', 'hello-aoccss') . '" value="' . $key . '" />';
-				echo '<p>' . sprintf(__('API Key for %s', 'hello-aoccss'), '<b>' . Plugin::apiBase() . '</b>') . '</p>';
+				echo '<input id="' . self::$settingAPIKey . '" type="text" name="' . self::$settingAPIKey . '" placeholder="' . __('Your API key', 'aoccssio') . '" value="' . $key . '" />';
+				echo '<p>' . sprintf(__('API Key for %s', 'aoccssio'), '<b>' . Plugin::apiBase() . '</b>') . '</p>';
 			},
 			self::$optionsPage,
 			self::$key . '-section'
@@ -66,7 +66,7 @@ class Settings
 					add_settings_error(
 						self::$settingAPIKey,
 						'invalid',
-						sprintf(__('The API Key is invalid or does not match the URL %s', 'hello-aoccss'), Plugin::baseUrl()),
+						sprintf(__('The API Key is invalid or does not match the URL %s', 'aoccssio'), Plugin::baseUrl()),
 						'error'
 					);
 
@@ -93,18 +93,20 @@ class Settings
 				<?php
 				if (self::getApiKey()) {
 					?>
-					<div class="aoccssio-settings"></div>
+					<div class="aoccssio-settings">
+						<?php do_action('aoccssio/generatorFields') ?>
+					</div>
 					<?php
 				} else {
 					?>
 					<div class="aoccssio-intro">
-						<h2><?php _e('Critical CSS API', 'hello-aoccss'); ?></h2>
+						<h2><?php _e('Critical CSS API', 'aoccssio'); ?></h2>
 						<p>
-							<?php printf(__('Critical CSS API is an open source tool to generate the Critical CSS of a given URL: %s', 'hello-aoccss'), '<a href="https://github.com/nico-martin/critical-css-api" target="_blank">https://github.com/nico-martin/critical-css-api</a>'); ?><br/>
-							<?php printf(__('By default this plugin uses the hosted version on %1s. But you could also use a self-hosted version by adjusting the API Base URL using the %s-filter.', 'hello-aoccss'), '<a href="https://app.critical-css.io" target="_blank">app.critical-css.io</a>', '<code>aoccssio/apiBaseURL</code>'); ?>
+							<?php printf(__('Critical CSS API is an open source tool to generate the Critical CSS of a given URL: %s', 'aoccssio'), '<a href="https://github.com/nico-martin/critical-css-api" target="_blank">https://github.com/nico-martin/critical-css-api</a>'); ?><br/>
+							<?php printf(__('By default this plugin uses the hosted version on %1s. But you could also use a self-hosted version by adjusting the API Base URL using the %s-filter.', 'aoccssio'), '<a href="https://app.critical-css.io" target="_blank">app.critical-css.io</a>', '<code>aoccssio/apiBaseURL</code>'); ?>
 						</p>
 						<p>
-							<?php printf(__('Current base URL: %s', 'hello-aoccss'), '<b>' . Plugin::apiBase() . '</b>'); ?>
+							<?php printf(__('Current base URL: %s', 'aoccssio'), '<b>' . Plugin::apiBase() . '</b>'); ?>
 						</p>
 					</div>
 					<?php
@@ -124,7 +126,7 @@ class Settings
 		<?php
 	}
 
-	public function getApiKey()
+	public static function getApiKey()
 	{
 		return get_option(self::$settingAPIKey);
 	}

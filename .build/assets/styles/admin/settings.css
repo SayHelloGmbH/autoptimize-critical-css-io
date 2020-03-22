@@ -1,0 +1,24 @@
+.aoccssio-intro, .aoccssio-settings, .aoccssio-key {
+	box-sizing: border-box;
+	background: #fff;
+	border: 1px solid #ccc;
+	padding: 15px;
+	margin: 15px 10px 10px 0;
+	min-height: 15px;
+	width: 100%;
+}
+
+.aoccssio-key {
+	input#critcalcssio_apikey {
+		width: 100%;
+	}
+
+	th {
+		padding-right: 20px;
+	}
+
+	th, td {
+		vertical-align: top;
+		text-align: left;
+	}
+}

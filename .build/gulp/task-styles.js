@@ -5,17 +5,19 @@ import filter from 'gulp-filter';
 import postCSS from 'gulp-postcss';
 import autoprefixer from 'autoprefixer';
 import postCSSNested from 'postcss-nested';
+import postCSSImport from 'postcss-import';
 import rename from 'gulp-rename';
 import livereload from 'gulp-livereload';
 import sourcemaps from 'gulp-sourcemaps';
 
 export const task = config => {
 
-	return src(config.assetsBuild + 'styles/**/*.css')
+	return src(config.assetsBuild + 'styles/*.css')
 		.pipe(sourcemaps.init())
 		.pipe(postCSS([
 			autoprefixer(),
-			postCSSNested()
+			postCSSNested(),
+			postCSSImport()
 		]))
 		.pipe(sourcemaps.write({includeContent: false}))
 		.pipe(sourcemaps.init({loadMaps: true}))

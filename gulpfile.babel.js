@@ -3,7 +3,7 @@ import livereload from 'gulp-livereload';
 
 const config = {
 	name: 'Autoptimize critical-css.io',
-	key: 'hello-aoccss',
+	key: 'aoccssio',
 	assetsDir: 'assets/',
 	gulpDir: './.build/gulp/',
 	assetsBuild: '.build/assets/',

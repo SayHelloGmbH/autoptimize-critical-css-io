@@ -7,7 +7,7 @@
  * Author: Nico Martin
  * Version: 1.0.0
  * Author URI: https://nicomartin.ch
- * Text Domain: hello-aoccss
+ * Text Domain: aoccssio
  * Domain Path: /languages
  */
 
@@ -39,18 +39,27 @@ if (version_compare($wp_version, '4.7', '<') || version_compare(PHP_VERSION, '5.
 
 } else {
 
-	require_once 'src/Plugin.php';
+	include_once 'src/Plugin.php';
+	include_once 'src/Helpers.php';
+	include_once 'src/Assets.php';
+	include_once 'src/Settings.php';
+	include_once 'src/GeneratorFields.php';
+	include_once 'src/Output.php';
+
 	Plugin::initialize( __FILE__ );
 
-	include_once 'src/Assets.php';
-	$aoccssAssets = new Assets();
-	$aoccssAssets->run();
+	$aoccssioHelpers = new Helpers();
+	$aoccssioHelpers->run();
 
-	include_once 'src/Settings.php';
-	$aoccssSettings = new Settings();
-	$aoccssSettings->run();
+	$aoccssioAssets = new Assets();
+	$aoccssioAssets->run();
 
-	include_once 'src/Output.php';
-	$aoccssOutput = new Output();
-	$aoccssOutput->run();
+	$aoccssioSettings = new Settings();
+	$aoccssioSettings->run();
+
+	$aoccssioGeneratorFields = new GeneratorFields();
+	$aoccssioGeneratorFields->run();
+
+	$aoccssioOutput = new Output();
+	$aoccssioOutput->run();
 }
