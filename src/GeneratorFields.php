@@ -161,7 +161,7 @@ class GeneratorFields
 	public function registerMetaBbox($post)
 	{
 		if ('publish' != $post->post_status) {
-			echo '<p>' . __('Please publish the post before generating the Critical CSS.', 'awpp') . '</p>';
+			echo '<p>' . __('Please publish the post before generating the Critical CSS.', 'aoccssio') . '</p>';
 		} else {
 			echo Helpers::renderGenerateSingle("singular-{$post->ID}", get_permalink($post->ID));
 		}

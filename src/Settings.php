@@ -16,9 +16,17 @@ class Settings
 
 	public function run()
 	{
+		if (self::getApiKey()) {
+			add_filter('aoccssio/criticalDir', [$this, 'changeCriticalDir'], 99);
+		}
 		add_filter('autoptimize_filter_settingsscreen_tabs', [$this, 'addTab']);
 		add_action('admin_menu', [$this, 'adminMenu']);
 		add_action('admin_init', [$this, 'settingsInit']);
+	}
+
+	public function changeCriticalDir($dir)
+	{
+		return Helpers::getCriticalDir();
 	}
 
 	public function addTab($tabs)

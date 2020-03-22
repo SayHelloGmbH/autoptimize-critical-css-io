@@ -44,12 +44,11 @@ if (version_compare($wp_version, '4.7', '<') || version_compare(PHP_VERSION, '5.
 	include_once 'src/Assets.php';
 	include_once 'src/Settings.php';
 	include_once 'src/GeneratorFields.php';
+	include_once 'src/Generate.php';
 	include_once 'src/Output.php';
 
 	Plugin::initialize( __FILE__ );
-
-	$aoccssioHelpers = new Helpers();
-	$aoccssioHelpers->run();
+	new Helpers();
 
 	$aoccssioAssets = new Assets();
 	$aoccssioAssets->run();
@@ -59,6 +58,9 @@ if (version_compare($wp_version, '4.7', '<') || version_compare(PHP_VERSION, '5.
 
 	$aoccssioGeneratorFields = new GeneratorFields();
 	$aoccssioGeneratorFields->run();
+
+	$aoccssioGenerate = new Generate();
+	$aoccssioGenerate->run();
 
 	$aoccssioOutput = new Output();
 	$aoccssioOutput->run();

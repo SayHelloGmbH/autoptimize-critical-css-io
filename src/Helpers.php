@@ -4,80 +4,9 @@ namespace nicomartin\AoCriticalCSS;
 
 class Helpers
 {
-	private static $ajax_action = 'aoccssio_ajax_generate';
-	private static $ajax_action_delete = 'aoccssio_ajax_delete';
-	private static $filesmatch_option = 'aoccssio_filesmatch';
+	public static $filesmatch_option = 'aoccssio_filesmatch';
 
-	public function run()
-	{
-		if (Settings::getApiKey()) {
-			add_filter('aoccssio/criticalDir', [$this, 'changeCriticalDir'], 99);
-		}
-		add_action('wp_ajax_' . self::$ajax_action, [$this, 'ajaxGenerate']);
-		add_action('wp_ajax_' . self::$ajax_action_delete, [$this, 'ajaxDelete']);
-	}
-
-	public function changeCriticalDir($dir)
-	{
-		return self::getCriticalDir();
-	}
-
-	public function ajaxGenerate()
-	{
-
-		$url = esc_url($_POST['url']);
-		if (strpos(untrailingslashit(get_site_url()), $url) != 0) {
-			// translators: The requested URL is not a subpage of {url}
-			self::exitAjax('error', sprintf(__('The requested URL is not a subpage of %s', 'aoccssio'), untrailingslashit(get_site_url())));
-		}
-
-		$key  = sanitize_title($_POST['critical_key']);
-		$dir  = self::getCriticalDir();
-		$file = $dir . $key . '.css';
-
-		$css = self::fetchCss($url);
-		if (201 != $css['status']) {
-			// translators: Critical CSS could not be fetched: {message} ({status})
-			self::exitAjax('error', sprintf(__('Critical CSS could not be fetched: %1$1s (%2$2s)', 'aoccssio'), $css['message'], $css['status']));
-		}
-
-		$css_file = fopen($file, 'w');
-		fwrite($css_file, $css['message']);
-		fclose($css_file);
-
-		if (isset($_POST['savepage']) && 'yes' == $_POST['savepage']) {
-			$filesmatch = get_option(self::$filesmatch_option);
-			if ( ! is_array($filesmatch)) {
-				$filesmatch = [];
-			}
-			$filesmatch[$key] = $url;
-			update_option(self::$filesmatch_option, $filesmatch);
-		}
-
-		$data = [
-			'datetime' => self::convertDate(),
-			'option'   => self::$filesmatch_option,
-		];
-		// translators: Critical CSS for "{key}" ({url}) generated
-		self::exitAjax('success', sprintf(__('Critical CSS for "%1$s" (%2$s) generated.', 'aoccssio'), $key, $url), $data);
-	}
-
-	public function ajaxDelete()
-	{
-
-		$key  = sanitize_title($_POST['critical_key']);
-		$dir  = self::getCriticalDir();
-		$file = $dir . $key . '.css';
-		unlink($file);
-
-		self::exitAjax('success', 'deleted');
-	}
-
-	/**
-	 * Helpers
-	 */
-
-	public function doRequest($url, $data = [])
+	public static function doPostRequest($url, $data = [])
 	{
 		if (empty($data)) {
 			return [
@@ -94,27 +23,45 @@ class Helpers
 
 		$data_string = json_encode($data);
 		$data_string = htmlspecialchars_decode($data_string);
-		$ch          = curl_init($url);
-		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, [
-			'Content-Type: application/json',
-			'Content-Length: ' . strlen($data_string),
-		]);
-		$content   = curl_exec($ch);
-		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		curl_close($ch);
+		try {
+			$ch = curl_init($url);
+			if ($ch === false) {
+				throw new \Exception('failed to initialize');
+			}
+
+			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, [
+				'Content-Type: application/json',
+				'Content-Length: ' . strlen($data_string),
+			]);
+			$content   = curl_exec($ch);
+			$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			if ($content === false) {
+				throw new \Exception(curl_error($ch), curl_errno($ch));
+			}
+
+			curl_close($ch);
+		} catch (\Exception $e) {
+			return [
+				'status'  => 0,
+				'message' => sprintf('Curl failed with error #%d: %s', $e->getCode(), $e->getMessage()),
+			];
+		}
 
 		return [
 			'status'  => $http_code,
 			'message' => $content,
-			//'message' => $content . ' data: ' . $data_string, // debugging
+			'debug'   => [
+				'url'  => $url,
+				'data' => $data,
+			]
 		];
 	}
 
-	public function getDimensions()
+	public static function getDimensions()
 	{
 		$dimensions = [
 			'desktop' => [
@@ -164,22 +111,6 @@ class Helpers
 		}
 
 		return $dir;
-	}
-
-	public function fetchCss($url, $api_key = '')
-	{
-
-		if ('' == $api_key) {
-			$api_key = Settings::getApiKey();
-		}
-
-		$atts = [
-			'apiKey'     => $api_key,
-			'url'        => $url,
-			'dimensions' => self::getDimensions(),
-		];
-
-		return self::doRequest($atts);
 	}
 
 	public static function getAllCriticalElements()
@@ -321,8 +252,8 @@ class Helpers
 
 		$return = '<tr class="aoccssio-generate aoccssio-generate--' . ($has_file ? 'file' : 'nofile') . '" id="' . $critical_key . '">';
 		$return .= '<td>';
-		$return .= '<input name="aoccssio_action" data-aoccssio-name="action" type="hidden" value="' . self::$ajax_action . '"/>';
-		$return .= '<input name="aoccssio_action_delete" data-aoccssio-name="action_delete" type="hidden" value="' . self::$ajax_action_delete . '"/>';
+		$return .= '<input name="aoccssio_action" data-aoccssio-name="action" type="hidden" value="' . Generate::$ajax_action . '"/>';
+		$return .= '<input name="aoccssio_action_delete" data-aoccssio-name="action_delete" type="hidden" value="' . Generate::$ajax_action_delete . '"/>';
 		$return .= '<input name="aoccssio_key" data-aoccssio-name="critical_key" type="hidden" value="' . $critical_key . '"/>';
 
 		$return .= '<p><b>' . $title . '</b></p>';
@@ -385,8 +316,8 @@ class Helpers
 
 		// controls
 		$return .= '<td class="aoccssio-generate__controls">';
-		$return .= '<a id="regenerate-criticalcss" class="button aoccssio-generate__regenerate">' . __('regenerate', 'aoccssio') . '</a>';
-		$return .= '<br><a id="delete-criticalcss" class="aoccssio-generate__delete">' . __('delete', 'aoccssio') . '</a>';
+		$return .= '<a id="regenerate-criticalcss-aoccssio" class="button aoccssio-generate__regenerate">' . __('regenerate', 'aoccssio') . '</a>';
+		$return .= '<br><a id="delete-criticalcss-aoccssio" class="aoccssio-generate__delete">' . __('delete', 'aoccssio') . '</a>';
 		$return .= '</td>';
 		$return .= '</tr>';
 
@@ -400,8 +331,8 @@ class Helpers
 		$has_file = file_exists($file);
 
 		$return = '<div class="aoccssio-generate aoccssio-generate--' . ($has_file ? 'file' : 'nofile') . '" id="' . $critical_key . '">';
-		$return .= '<input name="aoccssio_action" data-aoccssio-name="action" type="hidden" value="' . self::$ajax_action . '"/>';
-		$return .= '<input name="aoccssio_action_delete" data-aoccssio-name="action_delete" type="hidden" value="' . self::$ajax_action_delete . '"/>';
+		$return .= '<input name="aoccssio_action" data-aoccssio-name="action" type="hidden" value="' . Generate::$ajax_action . '"/>';
+		$return .= '<input name="aoccssio_action_delete" data-aoccssio-name="action_delete" type="hidden" value="' . Generate::$ajax_action_delete . '"/>';
 		$return .= '<input name="aoccssio_key" data-aoccssio-name="critical_key" type="hidden" value="' . $critical_key . '"/>';
 		$return .= '<input name="aoccssio_url" data-aoccssio-name="url" type="hidden" value="' . $url . '"/>';
 
@@ -419,8 +350,8 @@ class Helpers
 
 		// controls
 		$return .= '<div class="aoccssio-generate__controls">';
-		$return .= '<a id="regenerate-criticalcss" class="button aoccssio-generate__regenerate">' . __('regenerate', 'aoccssio') . '</a>';
-		$return .= '<br><a id="delete-criticalcss" class="aoccssio-generate__delete">' . __('delete', 'aoccssio') . '</a>';
+		$return .= '<a id="regenerate-criticalcss-aoccssio" class="button aoccssio-generate__regenerate">' . __('regenerate', 'aoccssio') . '</a>';
+		$return .= '<br><a id="delete-criticalcss-aoccssio" class="aoccssio-generate__delete">' . __('delete', 'aoccssio') . '</a>';
 		$return .= '</div>';
 		$return .= '</div>';
 
