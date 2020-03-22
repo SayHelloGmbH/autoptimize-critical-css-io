@@ -28,14 +28,8 @@ class GeneratorFields
 
 	public function sectionRecommended()
 	{
-		echo '<div class="aoccssio-wrap__section">';
-		echo '<h2>' . __('Recommended Pages', 'aoccssio') . '</h2>';
-		echo '<table class="aoccssio-table wp-list-table widefat striped">';
-		echo '<thead><tr>';
-		echo '<th>' . __('Element', 'aoccssio') . '</th>';
-		echo '<th>' . __('generated', 'aoccssio') . '</th>';
-		echo '<th></th>';
-		echo '</tr></thead>';
+		echo '<div class="aoccssio-wrap">';
+		echo '<h2 class="aoccssio-wrap__title">' . __('Recommended Pages', 'aoccssio') . '</h2>';
 
 		$select_array = array_merge([
 			'-' => [
@@ -44,24 +38,19 @@ class GeneratorFields
 			],
 		], Helpers::getAllCriticalElements());
 
-		echo Helpers::renderGenerateList('index', __('Fallback (index.css)', 'aoccssio'), $select_array);
-		echo Helpers::renderGenerateList('front-page', __('Front Page', 'aoccssio'), get_home_url());
-		echo Helpers::renderGenerateList('singular', __('Singular', 'aoccssio'), $select_array);
-		echo Helpers::renderGenerateList('archive', __('Archive', 'aoccssio'), '');
-		echo '</table>';
+		echo '<div class="aoccssio-wrap__elements">';
+		echo Helpers::renderGenerate('index', __('Fallback (index.css)', 'aoccssio'), $select_array);
+		echo Helpers::renderGenerate('front-page', __('Front Page', 'aoccssio'), get_home_url());
+		echo Helpers::renderGenerate('singular', __('Singular', 'aoccssio'), $select_array);
+		echo Helpers::renderGenerate('archive', __('Archive', 'aoccssio'), '');
+		echo '</div>';
 		echo '</div>';
 	}
 
 	public function sectionPosttypes()
 	{
-		echo '<div class="aoccssio-wrap__section">';
-		echo '<h2>' . __('Post Types', 'aoccssio') . '</h2>';
-		echo '<table class="aoccssio-table wp-list-table widefat striped">';
-		echo '<thead><tr>';
-		echo '<th>' . __('Element', 'aoccssio') . '</th>';
-		echo '<th>' . __('generated', 'aoccssio') . '</th>';
-		echo '<th></th>';
-		echo '</tr></thead>';
+		echo '<div class="aoccssio-wrap">';
+		echo '<h2 class="aoccssio-wrap__title">' . __('Post Types', 'aoccssio') . '</h2>';
 
 		$select_array = array_merge([
 			'-' => [
@@ -70,27 +59,21 @@ class GeneratorFields
 			],
 		], Helpers::getAllCriticalElements());
 
+		echo '<div class="aoccssio-wrap__elements">';
 		foreach (Helpers::getPostTypes() as $key => $name) {
-			echo Helpers::renderGenerateList('singular-' . $key, $name, $select_array['singular-' . $key]);
+			echo Helpers::renderGenerate('singular-' . $key, $name, $select_array['singular-' . $key]);
 			if ('' != get_post_type_archive_link($key)) {
-				echo Helpers::renderGenerateList('archive-' . $key, __('Archive', 'aoccssio') . ': ' . $name, get_post_type_archive_link($key));
+				echo Helpers::renderGenerate('archive-' . $key, __('Archive', 'aoccssio') . ': ' . $name, get_post_type_archive_link($key));
 			}
 		}
-
-		echo '</table>';
+		echo '</div>';
 		echo '</div>';
 	}
 
 	public function sectionTaxonomies()
 	{
-		echo '<div class="aoccssio-wrap__section">';
-		echo '<h2>' . __('Taxonomies', 'aoccssio') . '</h2>';
-		echo '<table class="aoccssio-table wp-list-table widefat striped">';
-		echo '<thead><tr>';
-		echo '<th>' . __('Element', 'aoccssio') . '</th>';
-		echo '<th>' . __('generated', 'aoccssio') . '</th>';
-		echo '<th></th>';
-		echo '</tr></thead>';
+		echo '<div class="aoccssio-wrap">';
+		echo '<h2 class="aoccssio-wrap__title">' . __('Taxonomies', 'aoccssio') . '</h2>';
 
 		$select_array = array_merge([
 			'-' => [
@@ -99,24 +82,18 @@ class GeneratorFields
 			],
 		], Helpers::getAllCriticalElements());
 
+		echo '<div class="aoccssio-wrap__elements">';
 		foreach (Helpers::getTaxonomies() as $key => $name) {
-			echo Helpers::renderGenerateList('archvie-taxonomy-' . $key, $name, $select_array['archive-taxonomy-' . $key]);
+			echo Helpers::renderGenerate('archvie-taxonomy-' . $key, $name, $select_array['archive-taxonomy-' . $key]);
 		}
-
-		echo '</table>';
+		echo '</div>';
 		echo '</div>';
 	}
 
 	public function sectionSpecial()
 	{
-		echo '<div class="aoccssio-wrap__section">';
-		echo '<h2>' . __('Special Pages', 'aoccssio') . '</h2>';
-		echo '<table class="aoccssio-table wp-list-table widefat striped">';
-		echo '<thead><tr>';
-		echo '<th>' . __('Element', 'aoccssio') . '</th>';
-		echo '<th>' . __('generated', 'aoccssio') . '</th>';
-		echo '<th></th>';
-		echo '</tr></thead>';
+		echo '<div class="aoccssio-wrap">';
+		echo '<h2 class="aoccssio-wrap__title">' . __('Special Pages', 'aoccssio') . '</h2>';
 
 		$select_array = array_merge([
 			'-' => [
@@ -125,36 +102,25 @@ class GeneratorFields
 			],
 		], Helpers::getAllCriticalElements());
 
-		echo Helpers::renderGenerateList('archive-author', __('Archive Author', 'aoccssio'), $select_array['archive-author']);
-		echo Helpers::renderGenerateList('404', __('404 Page', 'aoccssio'), '');
-		echo Helpers::renderGenerateList('search', __('Search Page', 'aoccssio'), '');
-		echo '</table>';
+		echo '<div class="aoccssio-wrap__elements">';
+		echo Helpers::renderGenerate('archive-author', __('Archive Author', 'aoccssio'), $select_array['archive-author']);
+		echo Helpers::renderGenerate('404', __('404 Page', 'aoccssio'), '');
+		echo Helpers::renderGenerate('search', __('Search Page', 'aoccssio'), '');
+		echo '</div>';
 		echo '</div>';
 	}
 
 	public function sectionDate()
 	{
-		echo '<div class="aoccssio-wrap__section">';
-		echo '<h2>' . __('Archive Date', 'aoccssio') . '</h2>';
-		echo '<table class="aoccssio-table wp-list-table widefat striped">';
-		echo '<thead><tr>';
-		echo '<th>' . __('Element', 'aoccssio') . '</th>';
-		echo '<th>' . __('generated', 'aoccssio') . '</th>';
-		echo '<th></th>';
-		echo '</tr></thead>';
+		echo '<div class="aoccssio-wrap">';
+		echo '<h2 class="aoccssio-wrap__title">' . __('Archive Date', 'aoccssio') . '</h2>';
 
-		$select_array = array_merge([
-			'-' => [
-				'name' => __('Select Page', 'aoccssio'),
-				'url'  => '',
-			],
-		], Helpers::getAllCriticalElements());
-
-		echo Helpers::renderGenerateList('archive-date', __('Archive Date', 'aoccssio'), '');
-		echo Helpers::renderGenerateList('archive-date-year', '- ' . __('Archive Date Year', 'aoccssio'), '');
-		echo Helpers::renderGenerateList('archive-date-month', '- ' . __('Archive Date Month', 'aoccssio'), '');
-		echo Helpers::renderGenerateList('archive-date-day', '- ' . __('Archive Date Day', 'aoccssio'), '');
-		echo '</table>';
+		echo '<div class="aoccssio-wrap__elements">';
+		echo Helpers::renderGenerate('archive-date', __('Archive Date', 'aoccssio'));
+		echo Helpers::renderGenerate('archive-date-year', '- ' . __('Archive Date Year', 'aoccssio'), '');
+		echo Helpers::renderGenerate('archive-date-month', '- ' . __('Archive Date Month', 'aoccssio'), '');
+		echo Helpers::renderGenerate('archive-date-day', '- ' . __('Archive Date Day', 'aoccssio'), '');
+		echo '</div>';
 		echo '</div>';
 	}
 

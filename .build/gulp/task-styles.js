@@ -16,8 +16,8 @@ export const task = config => {
 		.pipe(sourcemaps.init())
 		.pipe(postCSS([
 			autoprefixer(),
-			postCSSNested(),
-			postCSSImport()
+			postCSSImport(),
+			postCSSNested()
 		]))
 		.pipe(sourcemaps.write({includeContent: false}))
 		.pipe(sourcemaps.init({loadMaps: true}))

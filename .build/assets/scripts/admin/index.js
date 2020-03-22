@@ -13,22 +13,17 @@
 		$elements.each(function () {
 			const $e = $(this);
 			const $url_input = $e.find('[name="aoccssio_url"]');
-			const $trigger_generate = $e.find('#regenerate-criticalcss-aoccssio');
-			const $trigger_delete = $e.find('#delete-criticalcss-aoccssio');
+			const $trigger_generate = $e.find('.aoccssio-generate__regenerate');
+			const $trigger_delete = $e.find('.aoccssio-generate__delete');
+			console.log($trigger_generate.length);
 
 			$trigger_generate.on('click', function () {
-
-				$url_input.removeClass('-error');
 				const url = $url_input.val();
-
 				if (!valid_url(url)) {
-					$url_input.addClass('-error');
-					$url_input.addClass('-pop');
-					/*
+					$url_input.addClass('aoccssio-generate__input--error-pop');
 					setTimeout(function () {
-						$url_input.removeClass('-pop');
-					}, settings_easing_speed);
-					 */
+						$url_input.removeClass('aoccssio-generate__input--error-pop');
+					}, 200);
 					return false;
 				}
 

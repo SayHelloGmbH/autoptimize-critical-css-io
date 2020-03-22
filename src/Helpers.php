@@ -239,6 +239,77 @@ class Helpers
 	/**
 	 * Render
 	 */
+	public static function renderGenerate($critical_key, $title, $urls = '')
+	{
+		$file         = self::getCriticalDir() . $critical_key . '.css';
+		$has_file     = file_exists($file);
+		$saved_option = get_option(self::$filesmatch_option);
+		$saved_url    = '';
+		if (is_array($saved_option) && array_key_exists($critical_key, $saved_option)) {
+			$saved_url = $saved_option[$critical_key];
+		}
+
+		$return = '';
+		$return .= '<div class="aoccssio-generate aoccssio-generate--' . ($has_file ? 'file' : 'nofile') . '" id="' . $critical_key . '">';
+		$return .= '<h3 class="aoccssio-generate__title">' . $title . '</h3>';
+		$return .= '<div class="aoccssio-generate__content">';
+		$return .= '<input name="aoccssio_action" data-aoccssio-name="action" type="hidden" value="' . Generate::$ajax_action . '"/>';
+		$return .= '<input name="aoccssio_action_delete" data-aoccssio-name="action_delete" type="hidden" value="' . Generate::$ajax_action_delete . '"/>';
+		$return .= '<input name="aoccssio_key" data-aoccssio-name="critical_key" type="hidden" value="' . $critical_key . '"/>';
+
+		if ($urls === '') {
+			$return .= '<input name="aoccssio_url" data-aoccssio-name="url" type="text" value="' . $saved_url . '" class="aoccssio-generate__input"/>';
+		} elseif (is_array($urls)) {
+			$return .= '<select name="aoccssio_url" data-aoccssio-name="url" class="aoccssio-generate__input">';
+			if (array_key_exists('elements', $urls) && is_array($urls['elements'])) {
+				foreach ($urls['elements'] as $element_key => $element) {
+					$selected = '';
+					if ($saved_url == $element['url']) {
+						$selected = 'selected';
+					}
+					$return .= "<option data-key='{$element_key}' value='{$element['url']}' {$selected }>{$element['name']}</option>";
+				}
+			} else {
+				foreach ($urls as $key => $val) {
+					if (array_key_exists('elements', $val) && is_array($val['elements'])) {
+						if (empty($val['elements'])) {
+							continue;
+						}
+						$return .= "<optgroup label='{$val['name']}'>";
+						foreach ($val['elements'] as $element_key => $element) {
+							$selected = '';
+							if ($saved_url == $element['url']) {
+								$selected = 'selected';
+							}
+							$return .= "<option data-key='{$element_key}' value='{$element['url']}' {$selected }>{$element['name']}</option>";
+						}
+						$return .= '</optgroup>';
+					} else {
+						$selected = '';
+						if ($saved_url == $val['url']) {
+							$selected = 'selected';
+						}
+						$return .= "<option data-key='{$key}' value='{$val['url']}' {$selected }>{$val['name']}</option>";
+					}
+				}
+			}
+			$return .= '</select>';
+		} else {
+			$return .= '<input name="aoccssio_url" data-aoccssio-name="url" type="text" value="' . $urls . '" disabled class="aoccssio-generate__input"/>';
+		}
+
+		$return .= '<span class="aoccssio-generate__status">' . ($has_file ? self::convertDate(filemtime($file)) : 'not yet generated') . '</span>';
+		$return .= '<div class="aoccssio-generate__controls">';
+		$return .= '<button type="button" class="aoccssio-generate__regenerate button">' . __('regenerate', 'aoccssio') . '</button>';
+		$return .= '<button type="button" class="aoccssio-generate__delete">' . __('delete', 'aoccssio') . '</button>';
+		$return .= '</div>';
+		$return .= '</div>';
+
+		$return .= '</div>';
+
+		return $return;
+	}
+
 	public static function renderGenerateList($critical_key, $title, $urls)
 	{
 

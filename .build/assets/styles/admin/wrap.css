@@ -1,0 +1,22 @@
+.aoccssio-wrap {
+
+	&__title {
+		margin-bottom: 30px;
+	}
+
+	& + .aoccssio-wrap {
+		margin-top: 20px;
+		position: relative;
+		padding-top: 5px;
+
+		&:before {
+			background-color: #dbdbdb;
+			content: '';
+			height: 1px;
+			position: absolute;
+			top: 0;
+			left: -15px;
+			right: -15px;
+		}
+	}
+}
