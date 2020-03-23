@@ -19,7 +19,7 @@ class Settings
 		if (self::getApiKey()) {
 			add_filter('aoccssio/criticalDir', [$this, 'changeCriticalDir'], 99);
 		}
-		add_filter('autoptimize_filter_settingsscreen_tabs', [$this, 'addTab']);
+		add_filter('autoptimize_filter_settingsscreen_tabs', [$this, 'addTab'], 99);
 		add_action('admin_menu', [$this, 'adminMenu']);
 		add_action('admin_init', [$this, 'settingsInit']);
 	}
@@ -31,7 +31,8 @@ class Settings
 
 	public function addTab($tabs)
 	{
-		return array_merge($tabs, [self::$optionsPage => __('critical-css.io', 'aoccssio')]);
+		unset($tabs['ao_critcss']);
+		return array_merge($tabs, [self::$optionsPage => __('⚡ critical-css.io', 'aoccssio')]);
 	}
 
 	public function adminMenu()
