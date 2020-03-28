@@ -17,7 +17,7 @@ class Generate
 	public function ajaxGenerate()
 	{
 		$url = esc_url($_POST['url']);
-		if (strpos(untrailingslashit(get_site_url()), $url) != 0) {
+		if ($url === '' || strpos(untrailingslashit(get_site_url()), $url) != 0) {
 			// translators: The requested URL is not a subpage of {url}
 			Helpers::exitAjax('error', sprintf(__('The requested URL is not a subpage of %s', 'aoccssio'), untrailingslashit(get_site_url())));
 		}
@@ -27,28 +27,26 @@ class Generate
 		$file = $dir . $key . '.css';
 
 		$css = self::fetchCss($url);
-		if (201 != $css['status']) {
-			// translators: Critical CSS could not be fetched: {message} ({status})
-			$message = json_decode($css['message'], true);
-			Helpers::exitAjax('error', sprintf(__('Critical CSS could not be fetched: %1$1s (%2$2s)', 'aoccssio'), $message['error'], $css['status']), $css);
+		if (is_wp_error($css)) {
+			Helpers::exitAjax('error', $css->get_error_message());
 		}
 
 		$css_file = fopen($file, 'w');
-		fwrite($css_file, $css['message']);
+		fwrite($css_file, $css);
 		fclose($css_file);
 
-		if (isset($_POST['savepage']) && 'yes' == $_POST['savepage']) {
-			$filesmatch = get_option(Helpers::$filesmatch_option);
-			if ( ! is_array($filesmatch)) {
-				$filesmatch = [];
-			}
-			$filesmatch[$key] = $url;
-			update_option(Helpers::$filesmatch_option, $filesmatch);
+		$filesmatch = get_option(Helpers::$filesmatch_option);
+		if ( ! is_array($filesmatch)) {
+			$filesmatch = [];
 		}
+		$filesmatch[$key] = $url;
+		update_option(Helpers::$filesmatch_option, $filesmatch);
 
 		$data = [
 			'datetime' => Helpers::convertDate(),
 			'option'   => Helpers::$filesmatch_option,
+			'css'      => $css,
+			'cssFile'  => $css_file,
 		];
 		// translators: Critical CSS for "{key}" ({url}) generated
 		Helpers::exitAjax('success', sprintf(__('Critical CSS for "%1$s" (%2$s) generated.', 'aoccssio'), $key, $url), $data);
@@ -73,11 +71,19 @@ class Generate
 		}
 
 		$atts = [
-			'apiKey'     => $api_key,
+			'token'      => $api_key,
 			'url'        => $url,
 			'dimensions' => Helpers::getDimensions(),
 		];
 
-		return Helpers::doPostRequest(Plugin::apiBase(), $atts);
+		$request = Helpers::doPostRequest(Plugin::apiBase(), $atts);
+		if (201 != $request['status']) {
+			$message = json_decode($request['message'], true);
+
+			return new \WP_Error('ccss-request-failed', sprintf(__('Critical CSS for %1$1s could not be fetched: %2$2s (%3$3s)', 'aoccssio'), $url, $message['error'], $request['status']));
+		}
+
+
+		return $request['message'];
 	}
 }

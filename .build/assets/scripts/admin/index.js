@@ -1,56 +1,51 @@
 (function ($, plugin) {
-	const $elements = $('.aoccssio-generate');
-	if (!$elements.length) {
-		return;
-	}
-
 	$(function () {
+		const $elements = $('.aoccssio-generate');
+		if (!$elements.length) {
+			return;
+		}
 
 		const $wpbody = $('body #wpcontent');
 		$wpbody.append('<div class="aoccssio-loader"></div>');
-		const $loader = $wpbody.find('.aoccssio-loader');
+		const $loader = $('.aoccssio-loader');
 		const $wp_spinner = $('<img src="./images/spinner.gif" />');
 		const $wp_loading = $('<img src="./images/loading.gif" style="margin-right: 5px;" />');
 
-		const genLoading = function(loading, $e) {
-			const $url_input = $e.find('[name="aoccssio_url"]');
-			const $trigger_generate = $e.find('.aoccssio-generate__regenerate');
-			const $trigger_delete = $e.find('.aoccssio-generate__delete');
-			const $trigger_controls = $e.find('.aoccssio-generate__controls');
-			const $trigger_status = $e.find('.aoccssio-generate__status');
-			
-			if (loading) {
-				$url_input.attr('disabled', true);
-				$trigger_delete.add($trigger_generate).add($trigger_status).hide();
-				$trigger_controls.append($wp_spinner);
-				$wp_loading.insertBefore($trigger_status);
-			} else {
-				$url_input.attr('disabled', false);
-				$trigger_delete.add($trigger_generate).add($trigger_status).show();
-				$wp_spinner.add($wp_loading).remove();
-			}
-		}
 
 		$elements.each(function () {
 			const $e = $(this);
-			const $url_input = $e.find('[name="aoccssio_url"]');
-			const $trigger_generate = $e.find('.aoccssio-generate__regenerate');
-			const $trigger_delete = $e.find('.aoccssio-generate__delete');
-			// console.log($trigger_generate.length);
+			const $urlInput = $e.find('[name="aoccssio_url"]');
+			const $triggerGenerate = $e.find('.aoccssio-generate__regenerate');
+			const $triggerDelete = $e.find('.aoccssio-generate__delete');
+			const $triggerControls = $e.find('.aoccssio-generate__controls');
+			const $triggerStatus = $e.find('.aoccssio-generate__status');
 
-			$trigger_generate.on('click', function () {
+			const genLoading = function (loading) {
+				if (loading) {
+					$urlInput.attr('disabled', true);
+					$triggerDelete.add($triggerGenerate).add($triggerStatus).hide();
+					$triggerControls.append($wp_spinner);
+					$wp_loading.insertBefore($triggerStatus);
+				} else {
+					$urlInput.attr('disabled', false);
+					$triggerDelete.add($triggerGenerate).add($triggerStatus).show();
+					$wp_spinner.add($wp_loading).remove();
+				}
+			};
 
-				genLoading(true, $e);
-				const url = $url_input.val();
+			$triggerGenerate.on('click', function () {
+
+				const url = $urlInput.val();
 
 				if (!valid_url(url)) {
-					$url_input.addClass('aoccssio-generate__input--error-pop');
+					$urlInput.addClass('aoccssio-generate__input--error-pop');
 					setTimeout(function () {
-						$url_input.removeClass('aoccssio-generate__input--error-pop');
+						$urlInput.removeClass('aoccssio-generate__input--error-pop');
 					}, 200);
 					return false;
 				}
 
+				genLoading(true);
 				let vals = [];
 				$e.find('input, textarea, select').each(function () {
 					vals.push($(this).attr('data-aoccssio-name') + '=' + $(this).val());
@@ -66,7 +61,7 @@
 					data: val
 				}).done(function (data) {
 
-					genLoading(false, $e);
+					genLoading(false);
 
 					if (data['type'] === null || data['type'] !== 'success') {
 
@@ -94,9 +89,9 @@
 				});
 			});
 
-			$trigger_delete.on('click', function () {
+			$triggerDelete.on('click', function () {
 
-				genLoading(true, $e);
+				genLoading(true);
 				let vals = [];
 				vals.push('action=' + $e.find('input[name=criticalapi_action_delete]').val());
 				vals.push('critical_key=' + $e.find('input[name=criticalapi_key]').val());
@@ -113,7 +108,7 @@
 					data: val
 				}).done(function (data) {
 
-					genLoading(false, $e);
+					genLoading(false);
 
 					if (data['type'] === null || data['type'] !== 'success') {
 

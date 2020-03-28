@@ -32,6 +32,7 @@ class Settings
 	public function addTab($tabs)
 	{
 		unset($tabs['ao_critcss']);
+
 		return array_merge($tabs, [self::$optionsPage => __('⚡ critical-css.io', 'aoccssio')]);
 	}
 
