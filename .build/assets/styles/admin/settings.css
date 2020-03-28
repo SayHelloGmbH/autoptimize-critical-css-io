@@ -22,3 +22,12 @@
 		text-align: left;
 	}
 }
+
+.aoccssio-warning {
+	background: #fff;
+	border: 1px solid #ccd0d4;
+	border-left: 4px solid #dc3232;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, .04);
+	margin-top: 15px;
+	padding: 1px 12px;
+}

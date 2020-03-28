@@ -101,7 +101,17 @@ class Settings
 				?>
 				<?php settings_errors(); ?>
 				<?php
-				if (self::getApiKey()) {
+				if ( ! Helpers::ccssEnabled()) {
+					?>
+					<div class="aoccssio-warning">
+						<p>
+							<?php printf(__('This Feature requires the setting "%s" to be active', 'aoccssio'), '<b>' . __('Inline and Defer CSS', 'aoccssio') . '</b>'); ?>
+						</p>
+					</div>
+					<?php
+				}
+
+				if (Helpers::showGenerateBoxes()) {
 					?>
 					<div class="aoccssio-settings">
 						<?php do_action('aoccssio/generatorFields') ?>
@@ -121,16 +131,19 @@ class Settings
 					</div>
 					<?php
 				}
-				?>
-				<form id="settings" method="post" action="options.php" class="aoccssio-key">
-					<table class="form-table">
-						<?php
-						settings_fields(self::$optionsPage);
-						do_settings_fields(self::$optionsPage, self::$key . '-section');
-						?>
-					</table>
-					<?php submit_button(); ?>
-				</form>
+
+				if (Helpers::ccssEnabled()) {
+					?>
+					<form id="settings" method="post" action="options.php" class="aoccssio-key">
+						<table class="form-table">
+							<?php
+							settings_fields(self::$optionsPage);
+							do_settings_fields(self::$optionsPage, self::$key . '-section');
+							?>
+						</table>
+						<?php submit_button(); ?>
+					</form>
+				<?php } ?>
 			</div>
 		</div>
 		<?php

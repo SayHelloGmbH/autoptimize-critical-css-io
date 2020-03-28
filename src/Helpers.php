@@ -426,6 +426,10 @@ class Helpers
 		return $return;
 	}
 
+	/**
+	 * Misc
+	 */
+
 	public static function exitAjax($type, $msg = '', $add = [])
 	{
 
@@ -507,5 +511,15 @@ class Helpers
 		} // End if().
 
 		return $ids;
+	}
+
+	public static function ccssEnabled()
+	{
+		return get_option('autoptimize_css_defer');
+	}
+
+	public static function showGenerateBoxes()
+	{
+		return self::ccssEnabled() && Settings::getApiKey();
 	}
 }

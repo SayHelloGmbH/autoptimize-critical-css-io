@@ -24,8 +24,10 @@ class Output
 
 	public function run()
 	{
-		//add_action('admin_bar_menu', [$this, 'addToolbarItem']);
-		add_action('wp_head', [$this, 'addCriticalCss'], 1);
+		if (Helpers::ccssEnabled()) {
+			//add_action('admin_bar_menu', [$this, 'addToolbarItem']);
+			add_action('wp_head', [$this, 'addCriticalCss'], 1);
+		}
 	}
 
 	/**
