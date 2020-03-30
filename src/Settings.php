@@ -6,7 +6,7 @@ class Settings
 {
 
 	private static $key = 'aoccssio';
-	private static $optionsPage = 'aoccssio_options';
+	public static $optionsPage = 'aoccssio_options';
 	private static $settingAPIKey = 'critcalcssio_apikey';
 	private static $title = 'Autoptimize critical-css.io';
 

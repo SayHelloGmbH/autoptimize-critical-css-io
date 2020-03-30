@@ -403,4 +403,14 @@ class Helpers
 	{
 		return self::ccssEnabled() && Settings::getApiKey();
 	}
+
+	public static function isFrontend()
+	{
+		//if (is_admin() || 'wp-login.php' == $GLOBALS['pagenow']) {
+		if (is_admin()) {
+			return false;
+		}
+
+		return true;
+	}
 }

@@ -25,8 +25,8 @@ class Output
 	public function run()
 	{
 		if (Helpers::ccssEnabled()) {
-			//add_action('admin_bar_menu', [$this, 'addToolbarItem']);
 			add_action('wp_head', [$this, 'addCriticalCss'], 1);
+			add_action('admin_bar_menu', [$this, 'addToolbarItem'], 101);
 		}
 	}
 
@@ -36,28 +36,29 @@ class Output
 
 	public function addToolbarItem($wp_admin_bar)
 	{
+		if (is_admin()) {
+			return;
+		}
 
 		$html = '';
-		$html .= '<input type="checkbox" id="awpp-check-criticalcss" />';
-		$html .= '<label for="awpp-check-criticalcss">';
-		$html .= __('Test Critical CSS', 'awpp');
-		$html .= '<span class="_info -on">(on)</span>';
-		$html .= '<span class="_info -off">(off)</span>';
+		$html .= '<input type="checkbox" id="aoccssio-tbcheck" />';
+		$html .= '<label for="aoccssio-tbcheck">';
+		$html .= __('Disable CSS', 'aoccssio');
+		$html .= '<span class="aoccssio-tbcheck__info aoccssio-tbcheck__info--on">(on)</span>';
+		$html .= '<span class="aoccssio-tbcheck__info aoccssio-tbcheck__info--off">(off)</span>';
 		$html .= '</label>';
 
 		$args = [
-			'id'     => awpp_get_instance()->Init->admin_bar_id . '-criticalcss',
-			'parent' => awpp_get_instance()->Init->admin_bar_id,
-			'title'  => __('Critical CSS', 'awpp'),
+			'id'     => 'aoccssio-admin-bar-item',
+			'parent' => 'autoptimize',
+			'title'  => __('Critical CSS', 'aoccssio'),
 			'href'   => '',
 			'meta'   => [
-				'class' => awpp_get_instance()->prefix . '-adminbar-criticalcss ' . (awpp_get_setting('deliverycss') ? '' : 'disabled'),
+				'class' => '', //awpp_get_instance()->prefix . '-adminbar-criticalcss ' . (awpp_get_setting('deliverycss') ? '' : 'disabled'),
+				'html'  => '<div class="ab-item ab-empty-item">' . $html . '</div>'
 			],
 		];
 
-		if (awpp_is_frontend() && awpp_get_setting('deliverycss')) {
-			$args['meta']['html'] = '<div class="ab-item ab-empty-item">' . $html . '</div>';
-		}
 		$wp_admin_bar->add_node($args);
 	}
 
