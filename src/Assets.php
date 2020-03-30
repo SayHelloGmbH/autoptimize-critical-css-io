@@ -12,8 +12,6 @@ class Assets
 
 	public function registerAssets()
 	{
-		return;
-
 		$script_version = Plugin::version();
 
 		$min = true;

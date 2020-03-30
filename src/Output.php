@@ -42,10 +42,8 @@ class Output
 
 		$html = '';
 		$html .= '<input type="checkbox" id="aoccssio-tbcheck" />';
-		$html .= '<label for="aoccssio-tbcheck">';
+		$html .= '<label for="aoccssio-tbcheck" class="aoccssio-tbcheck">';
 		$html .= __('Disable CSS', 'aoccssio');
-		$html .= '<span class="aoccssio-tbcheck__info aoccssio-tbcheck__info--on">(on)</span>';
-		$html .= '<span class="aoccssio-tbcheck__info aoccssio-tbcheck__info--off">(off)</span>';
 		$html .= '</label>';
 
 		$args = [
