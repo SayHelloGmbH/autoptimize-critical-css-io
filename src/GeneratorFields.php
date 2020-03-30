@@ -8,24 +8,24 @@ class GeneratorFields
 
 	public function run()
 	{
-		//if (Helpers::showGenerateBoxes()) {
-		add_action('aoccssio/generatorFields', [$this, 'sectionRecommended']);
-		add_action('aoccssio/generatorFields', [$this, 'sectionPosttypes']);
-		add_action('aoccssio/generatorFields', [$this, 'sectionTaxonomies']);
-		add_action('aoccssio/generatorFields', [$this, 'sectionSpecial']);
-		add_action('aoccssio/generatorFields', [$this, 'sectionDate']);
+		if (Helpers::showGenerateBoxes()) {
+			add_action('aoccssio/generatorFields', [$this, 'sectionRecommended']);
+			add_action('aoccssio/generatorFields', [$this, 'sectionPosttypes']);
+			add_action('aoccssio/generatorFields', [$this, 'sectionTaxonomies']);
+			add_action('aoccssio/generatorFields', [$this, 'sectionSpecial']);
+			add_action('aoccssio/generatorFields', [$this, 'sectionDate']);
 
-		add_action('add_meta_boxes', function () {
-			foreach (Helpers::getPostTypes() as $key => $name) {
-				add_meta_box('aoccssio-meta-box', self::$name, [$this, 'registerMetaBbox'], $key, 'side', 'low');
+			add_action('add_meta_boxes', function () {
+				foreach (Helpers::getPostTypes() as $key => $name) {
+					add_meta_box('aoccssio-meta-box', self::$name, [$this, 'registerMetaBbox'], $key, 'side', 'low');
+				}
+			});
+			foreach (Helpers::getTaxonomies() as $key => $name) {
+				add_action($key . '_edit_form_fields', [$this, 'registerTaxField'], 10, 2);
 			}
-		});
-		foreach (Helpers::getTaxonomies() as $key => $name) {
-			add_action($key . '_edit_form_fields', [$this, 'registerTaxField'], 10, 2);
+			add_action('show_user_profile', [$this, 'registerUserField'], 10, 1);
+			add_action('edit_user_profile', [$this, 'registerUserField'], 10, 1);
 		}
-		add_action('show_user_profile', [$this, 'registerUserField'], 10, 1);
-		add_action('edit_user_profile', [$this, 'registerUserField'], 10, 1);
-		//}
 	}
 
 	public function sectionRecommended()

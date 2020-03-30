@@ -58,7 +58,7 @@ class Generate
 		$file = $dir . $key . '.css';
 		unlink($file);
 
-		Helpers::exitAjax('success', 'deleted');
+		Helpers::exitAjax('success', 'deleted', ['text' => __('not yet generated', 'aoccssio')]);
 	}
 
 	public function fetchCss($url, $api_key = '')

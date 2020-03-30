@@ -295,7 +295,7 @@ class Helpers
 			$return .= '<input name="aoccssio_url" data-aoccssio-name="url" type="text" value="' . $urls . '" disabled class="aoccssio-generate__input"/>';
 		}
 
-		$return .= '<span class="aoccssio-generate__status">' . ($has_file ? self::convertDate(filemtime($file)) : 'not yet generated') . '</span>';
+		$return .= '<span class="aoccssio-generate__status">' . ($has_file ? self::convertDate(filemtime($file)) : __('not yet generated', 'aoccssio')) . '</span>';
 		$return .= '<div class="aoccssio-generate__controls">';
 		$return .= '<button type="button" class="aoccssio-generate__regenerate button">' . __('regenerate', 'aoccssio') . '</button>';
 		$return .= '<button type="button" class="aoccssio-generate__delete">' . __('delete', 'aoccssio') . '</button>';

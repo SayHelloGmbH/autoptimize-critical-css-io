@@ -93,8 +93,8 @@
 
 				genLoading(true);
 				let vals = [];
-				vals.push('action=' + $e.find('input[name=criticalapi_action_delete]').val());
-				vals.push('critical_key=' + $e.find('input[name=criticalapi_key]').val());
+				vals.push('action=' + $e.find('input[name=aoccssio_action_delete]').val());
+				vals.push('critical_key=' + $e.find('input[name=aoccssio_key]').val());
 
 				const val = vals.join('&');
 
@@ -102,7 +102,7 @@
 				$e.addClass('aoccssio-generate--nofile');
 
 				$.ajax({
-					url: vars['AjaxURL'],
+					url: plugin['AjaxURL'],
 					type: 'POST',
 					dataType: 'json',
 					data: val
@@ -118,6 +118,8 @@
 						}
 
 						alert(msg_content);
+					} else {
+						$triggerStatus.text(data['add']['text']);
 					}
 				});
 			});
