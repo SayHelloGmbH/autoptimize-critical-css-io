@@ -18,6 +18,7 @@
 	&__input {
 		width: 40%;
 		margin-right: 20px;
+		max-width: none !important;
 		transition: all 200ms;
 
 		&--error-pop {
@@ -45,6 +46,46 @@
 		&:hover {
 			color: #dc3232;
 			opacity: 1;
+		}
+	}
+}
+
+/* MetaBox */
+#aoccssio-meta-box .aoccssio-generate {
+
+	&__input {
+		display: none;
+	}
+
+	&__content {
+		display: block;
+	}
+
+	&__status {
+		display: block;
+		margin-bottom: 20px;
+	}
+
+	&__controls {
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	&__delete {
+		margin-left: 0;
+		padding-left: 0;
+	}
+}
+
+/* Tax/Author */
+.aoccssio-generate-author, .aoccssio-generate-tax {
+	.aoccssio-generate {
+		&__input {
+			display: none;
+		}
+
+		&__content {
+			max-width: 30rem;
 		}
 	}
 }

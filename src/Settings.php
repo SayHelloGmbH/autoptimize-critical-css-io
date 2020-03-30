@@ -101,7 +101,7 @@ class Settings
 				?>
 				<?php settings_errors(); ?>
 				<?php
-				if ( ! Helpers::ccssEnabled()) {
+				if ( !Helpers::ccssEnabled()) {
 					?>
 					<div class="aoccssio-warning">
 						<p>

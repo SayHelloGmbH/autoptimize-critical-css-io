@@ -82,7 +82,7 @@
 						 * success
 						 */
 
-						$e.find('.is_generated').text(data['add']['datetime']);
+						$triggerStatus.text(data['add']['datetime']);
 						$e.removeClass('aoccssio-generate--nofile');
 					}
 

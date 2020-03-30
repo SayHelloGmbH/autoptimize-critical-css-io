@@ -9,7 +9,7 @@
 }
 
 .aoccssio-key {
-	input#critcalcssio_apikey {
+	input#critcalcssio_apikey, input#critcalcssio_apibase {
 		width: 100%;
 	}
 

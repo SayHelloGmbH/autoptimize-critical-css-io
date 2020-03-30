@@ -31,9 +31,7 @@ class Generate
 			Helpers::exitAjax('error', $css->get_error_message());
 		}
 
-		$css_file = fopen($file, 'w');
-		fwrite($css_file, $css);
-		fclose($css_file);
+		file_put_contents($file, $css);
 
 		$filesmatch = get_option(Helpers::$filesmatch_option);
 		if ( ! is_array($filesmatch)) {
@@ -46,7 +44,7 @@ class Generate
 			'datetime' => Helpers::convertDate(),
 			'option'   => Helpers::$filesmatch_option,
 			'css'      => $css,
-			'cssFile'  => $css_file,
+			'cssFile'  => $file,
 		];
 		// translators: Critical CSS for "{key}" ({url}) generated
 		Helpers::exitAjax('success', sprintf(__('Critical CSS for "%1$s" (%2$s) generated.', 'aoccssio'), $key, $url), $data);
