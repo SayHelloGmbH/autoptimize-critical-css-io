@@ -7,7 +7,21 @@ class Assets
 	public function run()
 	{
 		add_action('wp_enqueue_scripts', [$this, 'registerAssets']);
+		add_action('wp_head', [$this, 'addInlineStyles']);
 		add_action('admin_enqueue_scripts', [$this, 'registerAdminAssets']);
+	}
+
+	public function addInlineStyles()
+	{
+		$dir_uri = trailingslashit(plugin_dir_path(Plugin::file()));
+		$file    = $dir_uri . 'assets/styles/admin-bar.min.css';
+		if ( ! is_file($file)) {
+			var_dump('no file ' . $file);
+
+			return;
+		}
+		$contents = file_get_contents($file);
+		echo "<style type='text/css' id='ccssio-admin-bar-styles' media='all'>\n{$contents}\n</style>\n";
 	}
 
 	public function registerAssets()

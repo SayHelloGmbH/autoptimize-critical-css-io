@@ -24,7 +24,7 @@ class Output
 
 	public function run()
 	{
-		if (Helpers::ccssEnabled()) {
+		if (Helpers::ccssEnabled() && Settings::getApiKey()) {
 			add_action('wp_head', [$this, 'addCriticalCss'], 1);
 			add_action('admin_bar_menu', [$this, 'addToolbarItem'], 101);
 		}
@@ -36,24 +36,24 @@ class Output
 
 	public function addToolbarItem($wp_admin_bar)
 	{
-		if (is_admin()) {
+		if (is_admin() || ! Settings::getApiKey()) {
 			return;
 		}
 
 		$html = '';
-		$html .= '<input type="checkbox" id="aoccssio-tbcheck" />';
-		$html .= '<label for="aoccssio-tbcheck" class="aoccssio-tbcheck">';
+		$html .= '<input type="checkbox" id="aoccssio-tbcheck" class="aoccssio-tbcheck__input" />';
+		$html .= '<label for="aoccssio-tbcheck" class="aoccssio-tbcheck__label">';
 		$html .= __('Disable CSS', 'aoccssio');
 		$html .= '</label>';
 
 		$args = [
 			'id'     => 'aoccssio-admin-bar-item',
 			'parent' => 'autoptimize',
-			'title'  => __('Critical CSS', 'aoccssio'),
+			'title'  => __(' Critical CSS', 'aoccssio') . ' ⚡',
 			'href'   => '',
 			'meta'   => [
-				'class' => '', //awpp_get_instance()->prefix . '-adminbar-criticalcss ' . (awpp_get_setting('deliverycss') ? '' : 'disabled'),
-				'html'  => '<div class="ab-item ab-empty-item">' . $html . '</div>'
+				'class' => 'wp-admin-bar-aoccssio-tbcheck',
+				'html'  => '<div class="ab-item ab-empty-item aoccssio-tbcheck">' . $html . '</div>'
 			],
 		];
 
@@ -66,8 +66,6 @@ class Output
 
 	public function addCriticalCss()
 	{
-		// todo: check if AO setting set
-
 		$path = Helpers::getCriticalDir();
 
 		$critical_id = '';
